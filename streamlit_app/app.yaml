@@ -1,0 +1,9 @@
+command: ['streamlit', 'run', 'app.py']
+
+env:
+  - name: 'DATABRICKS_WAREHOUSE_ID'
+    value: 'your-databricks-sql-warehouse-id'
+  - name: 'CATALOG'
+    value: 'quake_lake'
+  - name: 'SCHEMA'
+    value: 'usgs_earthquakes_dev'

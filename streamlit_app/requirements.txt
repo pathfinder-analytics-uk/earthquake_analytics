@@ -1,0 +1,4 @@
+streamlit>=1.29.0
+pydeck>=0.8.0
+pandas>=2.0.0
+databricks-sql-connector>=3.0.0

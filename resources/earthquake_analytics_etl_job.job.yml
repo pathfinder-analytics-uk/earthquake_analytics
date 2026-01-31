@@ -1,0 +1,87 @@
+# A sample job for earthquake_analytics.
+
+resources:
+  jobs:
+    earthquake_analytics_etl_job:
+      name: earthquake_analytics_etl_job
+
+      trigger:
+        # Run this job every day, exactly one day from the last run; see https://docs.databricks.com/api/workspace/jobs/create#trigger
+        periodic:
+          interval: 1
+          unit: DAYS
+
+      #email_notifications:
+      #  on_failure:
+      #    - your_email@example.com
+
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: schema
+          default: ${var.schema}
+        - name: start_date
+          default: ""
+        - name: end_date
+          default: ""
+        - name: num_partitions
+          default: "1"
+
+      tasks:
+        - task_key: python_wheel_task
+          python_wheel_task:
+            package_name: utils
+            entry_point: main
+            parameters:
+              - "--catalog"
+              - "${var.catalog}"
+              - "--schema"
+              - "${var.schema}"
+          environment_key: default
+
+       # Task 1: Bronze Ingestion
+        - task_key: bronze_ingestion
+          depends_on:
+            - task_key: python_wheel_task
+          notebook_task:
+            notebook_path: ../etl/01_bronze_ingestion.ipynb
+            base_parameters:
+              catalog: "{{job.parameters.catalog}}"
+              schema: "{{job.parameters.schema}}"
+              start_date: "{{job.parameters.start_date}}"
+              end_date: "{{job.parameters.end_date}}" 
+              num_partitions: "{{job.parameters.num_partitions}}"
+              write_mode: merge
+          environment_key: default 
+
+        # Task 2: Silver Transformation
+        - task_key: silver_transformation
+          depends_on:
+            - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ../etl/02_silver_transformation.ipynb
+            base_parameters:
+              catalog: "{{job.parameters.catalog}}"
+              schema: "{{job.parameters.schema}}"
+              write_mode: merge
+          environment_key: default 
+        # Task 3: Gold Aggregation
+        - task_key: gold_aggregation
+          depends_on:
+            - task_key: silver_transformation
+          notebook_task:
+            notebook_path: ../etl/03_gold_aggregation.ipynb
+            base_parameters:
+              catalog: "{{job.parameters.catalog}}"
+              schema: "{{job.parameters.schema}}"
+          environment_key: default 
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "4"
+            dependencies:
+              # By default we just include the .whl file generated for the earthquake_analytics package.
+              # See https://docs.databricks.com/dev-tools/bundles/library-dependencies.html
+              # for more information on how to add other libraries.
+              - ../dist/*.whl

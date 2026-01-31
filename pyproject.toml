@@ -1,0 +1,33 @@
+[project]
+name = "utils"
+version = "0.0.1"
+authors = [{ name = "Malvik Vaghadia" }]
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "databricks-sql-connector>=4.2.4",
+    # Any dependencies for jobs and pipelines in this project can be added here
+    # See also https://docs.databricks.com/dev-tools/bundles/library-dependencies
+    #
+    # LIMITATION: for pipelines, dependencies are cached during development;
+    # add dependencies to the 'environment' section of your pipeline.yml file instead
+    "streamlit>=1.53.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+    "databricks-dlt",
+    "databricks-connect>=15.4,<15.5",
+    "ipykernel",
+]
+
+[project.scripts]
+main = "utils.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 120
