@@ -285,14 +285,6 @@ Interactive globe with earthquake columns sized by significance score.
 
 ---
 
-## Running Tests
-
-```bash
-uv run pytest
-```
-
----
-
 ## AI/BI Genie Space
 
 Once the gold tables are populated, create a Genie space in Databricks:
