@@ -75,7 +75,7 @@ Before starting this project, you should be comfortable with:
 |-------------|---------|
 | **Databricks Account** | [Databricks Free Edition](https://www.databricks.com/learn/free-edition) (free) or any Databricks workspace |
 | **IDE** | VS Code, Cursor, or PyCharm with Databricks extension |
-| **Python** | 3.10+ |
+| **Python** | 3.11+ |
 | **Package Manager** | [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or pip |
 | **Databricks CLI** | v0.200+ ([installation guide](https://docs.databricks.com/dev-tools/cli/databricks-cli.html)) |
 
